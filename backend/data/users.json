@@ -1,0 +1,10 @@
+[
+  {
+    "id": "USR-001",
+    "username": "admin",
+    "email": "admin@fazmastone.com",
+    "password": "admin123",
+    "role": "Administrator",
+    "name": "Admin Fazma Stone"
+  }
+]

@@ -1,0 +1,47 @@
+[
+    {
+        "idbarang": "BRG-001",
+        "nama": "Marmer Green Jade",
+        "kelompok": "MRM",
+        "stok": 48,
+        "harga": 185000,
+        "satuan": "m2",
+        "perdus": 4,
+        "margin1": 25,
+        "harga1": 46250,
+        "jual": 231250,
+        "supplyer": "SUP01",
+        "batas_diskon": 12,
+        "jumlah_diskon": 15000
+    },
+    {
+        "idbarang": "BRG-002",
+        "nama": "Granit Black Galaxy",
+        "kelompok": "GRT",
+        "stok": 19,
+        "harga": 245000,
+        "satuan": "m2",
+        "perdus": 3,
+        "margin1": 22,
+        "harga1": 53900,
+        "jual": 298900,
+        "supplyer": "SUP02",
+        "batas_diskon": 8,
+        "jumlah_diskon": 10000
+    },
+    {
+        "idbarang": "BRG-003",
+        "nama": "Travertine Classic",
+        "kelompok": "TRV",
+        "stok": 7,
+        "harga": 165000,
+        "satuan": "m2",
+        "perdus": 5,
+        "margin1": 18,
+        "harga1": 29700,
+        "jual": 194700,
+        "supplyer": "SUP01",
+        "batas_diskon": 5,
+        "jumlah_diskon": 7500
+    }
+]

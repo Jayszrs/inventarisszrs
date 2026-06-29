@@ -1,0 +1,110 @@
+[Tue Jun  9 11:50:00 2026] PHP 8.0.30 Development Server (http://localhost:3000) started
+[Tue Jun  9 11:50:26 2026] [::1]:59984 Accepted
+[Tue Jun  9 11:50:26 2026] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('admin', 'admin123')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:26 2026] [::1]:59984 [200]: POST /login.php - Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('admin', 'admin123')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:26 2026] [::1]:59984 Closing
+[Tue Jun  9 11:50:26 2026] [::1]:59986 Accepted
+[Tue Jun  9 11:50:26 2026] [::1]:59986 [302]: POST /barang-save.php
+[Tue Jun  9 11:50:26 2026] [::1]:59986 Closing
+[Tue Jun  9 11:50:26 2026] [::1]:59987 Accepted
+[Tue Jun  9 11:50:26 2026] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('', '')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:26 2026] [::1]:59987 [200]: POST /login.php - Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('', '')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:26 2026] [::1]:59987 Closing
+[Tue Jun  9 11:50:26 2026] [::1]:59989 Accepted
+[Tue Jun  9 11:50:26 2026] [::1]:59989 [302]: POST /barang-save.php
+[Tue Jun  9 11:50:26 2026] [::1]:59989 Closing
+[Tue Jun  9 11:50:26 2026] [::1]:59990 Accepted
+[Tue Jun  9 11:50:26 2026] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('', '')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:26 2026] [::1]:59990 [200]: POST /login.php - Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('', '')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:26 2026] [::1]:59990 Closing
+[Tue Jun  9 11:50:27 2026] [::1]:59992 Accepted
+[Tue Jun  9 11:50:27 2026] [::1]:59992 [302]: POST /barang-delete.php
+[Tue Jun  9 11:50:27 2026] [::1]:59992 Closing
+[Tue Jun  9 11:50:27 2026] [::1]:59993 Accepted
+[Tue Jun  9 11:50:27 2026] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('', '')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:27 2026] [::1]:59993 [200]: POST /login.php - Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('', '')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:27 2026] [::1]:59993 Closing
+[Tue Jun  9 11:50:53 2026] [::1]:60001 Accepted
+[Tue Jun  9 11:50:53 2026] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('admin', 'admin123')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:53 2026] [::1]:60001 [200]: POST /login.php - Uncaught PDOException: SQLSTATE[HY093]: Invalid parameter number in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php:34
+Stack trace:
+#0 C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php(34): PDOStatement->execute(Array)
+#1 C:\Users\jaela\Downloads\inventarisszrs\public\login.php(15): login_user('admin', 'admin123')
+#2 {main}
+  thrown in C:\Users\jaela\Downloads\inventarisszrs\backend\auth.php on line 34
+[Tue Jun  9 11:50:53 2026] [::1]:60001 Closing
+[Tue Jun  9 11:51:37 2026] [::1]:60023 Accepted
+[Tue Jun  9 11:51:37 2026] [::1]:60023 [302]: POST /login.php
+[Tue Jun  9 11:51:37 2026] [::1]:60023 Closing
+[Tue Jun  9 11:51:37 2026] [::1]:60027 Accepted
+[Tue Jun  9 11:51:37 2026] [::1]:60027 [200]: POST /dashboard.php
+[Tue Jun  9 11:51:37 2026] [::1]:60027 Closing
+[Tue Jun  9 11:51:37 2026] [::1]:60030 Accepted
+[Tue Jun  9 11:51:37 2026] [::1]:60030 [302]: POST /barang-save.php
+[Tue Jun  9 11:51:37 2026] [::1]:60030 Closing
+[Tue Jun  9 11:51:37 2026] [::1]:60032 Accepted
+[Tue Jun  9 11:51:37 2026] [::1]:60032 [200]: POST /dashboard.php
+[Tue Jun  9 11:51:37 2026] [::1]:60032 Closing
+[Tue Jun  9 11:51:37 2026] [::1]:60034 Accepted
+[Tue Jun  9 11:51:37 2026] [::1]:60034 [302]: POST /barang-save.php
+[Tue Jun  9 11:51:37 2026] [::1]:60034 Closing
+[Tue Jun  9 11:51:37 2026] [::1]:60036 Accepted
+[Tue Jun  9 11:51:38 2026] [::1]:60036 [200]: POST /dashboard.php
+[Tue Jun  9 11:51:38 2026] [::1]:60036 Closing
+[Tue Jun  9 11:51:38 2026] [::1]:60038 Accepted
+[Tue Jun  9 11:51:38 2026] [::1]:60038 [302]: POST /barang-delete.php
+[Tue Jun  9 11:51:38 2026] [::1]:60038 Closing
+[Tue Jun  9 11:51:38 2026] [::1]:60040 Accepted
+[Tue Jun  9 11:51:38 2026] [::1]:60040 [200]: POST /dashboard.php
+[Tue Jun  9 11:51:38 2026] [::1]:60040 Closing
+[Tue Jun  9 11:54:31 2026] [::1]:61616 Accepted
+[Tue Jun  9 11:54:31 2026] [::1]:61616 [302]: HEAD /
+[Tue Jun  9 11:54:31 2026] [::1]:61616 Closing
+[Tue Jun  9 11:54:31 2026] [::1]:61618 Accepted
+[Tue Jun  9 11:54:31 2026] [::1]:61618 [200]: GET /login.php
+[Tue Jun  9 11:54:31 2026] [::1]:61618 Closing
