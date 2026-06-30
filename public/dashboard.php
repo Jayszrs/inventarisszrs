@@ -31,6 +31,12 @@ $items = filter_barang($rows, $filters);
 $summary = barang_summary($rows);
 $kelompokOptions = unique_options($rows, 'kelompok');
 $supplyerOptions = unique_options($rows, 'supplyer');
+$kelompokPresets = [
+    'Batu Alam' => ['Batu Alam - Andesit', 'Batu Alam - Palimanan', 'Batu Alam - Marmer', 'Batu Alam - Granit'],
+    'ATK' => ['ATK - Buku Tulis', 'ATK - Pensil', 'ATK - Pulpen', 'ATK - Kertas HVS', 'ATK - Penghapus'],
+    'Buku' => ['Buku - Tulis', 'Buku - Gambar', 'Buku - Nota', 'Buku - Agenda'],
+    'Material' => ['Material - Semen', 'Material - Pasir', 'Material - Batu Alam', 'Material - Keramik'],
+];
 
 $pageTitle = 'Dashboard - ' . APP_NAME;
 require __DIR__ . '/../frontend/layout/header.php';
@@ -93,29 +99,28 @@ require __DIR__ . '/../frontend/layout/header.php';
             ?>
             <label>No Barang <input name="idbarang" type="text" value="<?= h($item['idbarang'] ?? '') ?>" readonly class="readonly-input"></label>
             <label>Suplyer <input name="supplyer" type="text" value="<?= h($item['supplyer'] ?? '') ?>" readonly class="readonly-input"></label>
-            <label style="grid-column: 1 / -1">Nama Barang <input name="nama" type="text" value="<?= h($item['nama'] ?? '') ?>" placeholder="Nama batu alam" required></label>
+            <label style="grid-column: 1 / -1">Nama Barang <input name="nama" type="text" value="<?= h($item['nama'] ?? '') ?>" placeholder="Contoh: Andesit Bakar atau Buku Tulis" required></label>
           </div>
           
-          <div style="margin-top: 16px;">
-            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--ink);">Kelompok</label>
+          <div class="field-block">
+            <label>Kelompok</label>
             <input type="hidden" name="kelompok" id="inputKelompok" value="<?= h($item['kelompok'] ?? '') ?>" required>
-            <div class="preset-buttons" id="kelompokButtons">
-              <?php
-                $kelompoks = ['Andesit Bakar RTM', 'Andesit Bakar RTA', 'Palimanan RTA', 'Palimanan RTM'];
-                foreach ($kelompoks as $k) {
-                  $active = ($item['kelompok'] ?? '') === $k ? 'active' : '';
-                  echo '<button type="button" class="preset-btn ' . $active . '" data-val="' . h($k) . '">' . h($k) . '</button>';
-                }
-              ?>
+            <div class="category-toolbar master-category-buttons" id="masterCategoryButtons">
+              <?php foreach (array_keys($kelompokPresets) as $category): ?>
+                <button type="button" class="category-btn" data-category="<?= h($category) ?>"><?= h($category) ?></button>
+              <?php endforeach; ?>
             </div>
+            <div class="preset-buttons" id="kelompokButtons">
+            </div>
+            <input class="compact-input" id="customKelompok" type="text" value="<?= h($item['kelompok'] ?? '') ?>" placeholder="Atau ketik kelompok sendiri">
           </div>
 
-          <div style="margin-top: 16px;">
-            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--ink);">Ukuran</label>
+          <div class="field-block">
+            <label>Ukuran</label>
             <input type="hidden" name="ukuran" id="inputUkuran" value="<?= h($item['ukuran'] ?? '') ?>" required>
             <div class="preset-buttons" id="ukuranButtons">
               <?php
-                $ukurans = ['10x10cm', '15x15cm', '20x20cm', '30x30cm', '40x40cm', '50x50cm'];
+                $ukurans = ['pcs', 'pack', 'rim', '10x10cm', '15x15cm', '20x20cm', '30x30cm', '40x40cm', '50x50cm'];
                 foreach ($ukurans as $u) {
                   $active = ($item['ukuran'] ?? '') === $u ? 'active' : '';
                   echo '<button type="button" class="preset-btn ' . $active . '" data-val="' . h($u) . '">' . h($u) . '</button>';
@@ -128,9 +133,9 @@ require __DIR__ . '/../frontend/layout/header.php';
         <div class="form-section">
           <h3>Stok & Harga Pokok</h3>
           <div class="form-grid">
-            <label>Satuan <input name="satuan" type="text" value="<?= h($item['satuan'] ?? '') ?>" placeholder="m2" required></label>
+            <label>Satuan <input name="satuan" type="text" value="<?= h($item['satuan'] ?? '') ?>" placeholder="m2 / pcs / rim" required></label>
             <label>Jumlah Stok <input name="stok" type="number" value="<?= h($item['stok'] ?? '0') ?>" required></label>
-            <label>Beli Per Berapa Batu <input name="perdus" type="number" value="<?= h($item['perdus'] ?? '0') ?>" required></label>
+            <label>Isi Per Dus/Pack <input name="perdus" type="number" value="<?= h($item['perdus'] ?? '0') ?>" required></label>
             <label>Harga Pokok (Rp) <input name="harga" id="inputHarga" type="number" value="<?= h($item['harga'] ?? '0') ?>" required></label>
           </div>
         </div>
@@ -284,6 +289,8 @@ require __DIR__ . '/../frontend/layout/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  const kelompokPresets = <?= json_encode($kelompokPresets, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+  const currentKelompok = <?= json_encode((string) ($item['kelompok'] ?? ''), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
   const inputHarga = document.getElementById('inputHarga');
   const inputMargin = document.getElementById('inputMargin');
   const previewJual = document.getElementById('previewJual');
@@ -349,8 +356,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  setupPresetButtons('kelompokButtons', 'inputKelompok');
   setupPresetButtons('ukuranButtons', 'inputUkuran');
+
+  const inputKelompok = document.getElementById('inputKelompok');
+  const customKelompok = document.getElementById('customKelompok');
+  const kelompokButtons = document.getElementById('kelompokButtons');
+  const masterCategoryButtons = document.querySelectorAll('#masterCategoryButtons .category-btn');
+
+  const detectCategory = (value) => {
+    const lower = value.toLowerCase();
+    return Object.keys(kelompokPresets).find((category) => lower.includes(category.toLowerCase())) || 'Batu Alam';
+  };
+
+  const renderKelompokButtons = (category) => {
+    kelompokButtons.innerHTML = '';
+    (kelompokPresets[category] || []).forEach((name) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'preset-btn';
+      button.dataset.val = name;
+      button.textContent = name;
+      if (inputKelompok.value === name) {
+        button.classList.add('active');
+      }
+      kelompokButtons.appendChild(button);
+    });
+  };
+
+  const activateCategory = (category) => {
+    masterCategoryButtons.forEach((button) => {
+      button.classList.toggle('active', button.dataset.category === category);
+    });
+    renderKelompokButtons(category);
+  };
+
+  masterCategoryButtons.forEach((button) => {
+    button.addEventListener('click', () => activateCategory(button.dataset.category));
+  });
+
+  kelompokButtons.addEventListener('click', (event) => {
+    const button = event.target.closest('.preset-btn');
+    if (!button) return;
+    kelompokButtons.querySelectorAll('.preset-btn').forEach((item) => item.classList.remove('active'));
+    button.classList.add('active');
+    inputKelompok.value = button.dataset.val;
+    customKelompok.value = button.dataset.val;
+  });
+
+  customKelompok.addEventListener('input', () => {
+    inputKelompok.value = customKelompok.value.trim();
+    kelompokButtons.querySelectorAll('.preset-btn').forEach((item) => {
+      item.classList.toggle('active', item.dataset.val === inputKelompok.value);
+    });
+  });
+
+  activateCategory(currentKelompok ? detectCategory(currentKelompok) : 'Batu Alam');
 
   // Image upload preview
   const uploadArea = document.getElementById('imageUploadArea');
