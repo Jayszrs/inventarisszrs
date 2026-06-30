@@ -22,18 +22,35 @@ function require_login(): void
     }
 }
 
+function is_administrator(): bool
+{
+    return strtolower((string) (current_user()['role'] ?? '')) === 'administrator';
+}
+
+function require_admin(): void
+{
+    require_login();
+
+    if (!is_administrator()) {
+        flash('Halaman ini hanya bisa diakses Administrator.', 'error');
+        redirect_to('/dashboard.php');
+    }
+}
+
 function login_user(string $identifier, string $password): bool
 {
     $key = strtolower(trim($identifier));
+    $numericId = ctype_digit($key) ? (int) $key : 0;
     $statement = db()->prepare('
         SELECT id, username, email, password_hash, role, name
         FROM admins
-        WHERE LOWER(username) = :username OR LOWER(email) = :email
+        WHERE LOWER(username) = :username OR LOWER(email) = :email OR id = :id
         LIMIT 1
     ');
     $statement->execute([
         'username' => $key,
         'email' => $key,
+        'id' => $numericId,
     ]);
     $user = $statement->fetch();
 

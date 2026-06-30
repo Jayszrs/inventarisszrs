@@ -83,7 +83,7 @@ require __DIR__ . '/../frontend/layout/header.php';
 
       <form class="login-form" method="post" action="<?= h(url_path('/login.php')) ?>">
         <label>
-          EMAIL / USERNAME
+          ID / USERNAME / EMAIL
           <span class="input-wrap">
             <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Z"/></svg>
             <input name="identifier" autocomplete="username" placeholder="admin atau email@fazmastone.com" required>
@@ -117,5 +117,24 @@ require __DIR__ . '/../frontend/layout/header.php';
     </div>
   </section>
 </main>
+<div class="portal-loader" id="portalLoader" aria-hidden="true">
+  <div class="loader-card">
+    <span class="loader-ring"></span>
+    <strong>Masuk Portal</strong>
+    <small>Memeriksa ID dan password</small>
+  </div>
+</div>
 <?php require __DIR__ . '/../frontend/components/flash.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('.login-form');
+  const loader = document.getElementById('portalLoader');
+
+  if (!form || !loader) return;
+
+  form.addEventListener('submit', () => {
+    loader.classList.add('active');
+  });
+});
+</script>
 <?php require __DIR__ . '/../frontend/layout/footer.php'; ?>
