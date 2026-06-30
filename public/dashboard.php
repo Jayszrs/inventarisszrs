@@ -130,19 +130,52 @@ require __DIR__ . '/../frontend/layout/header.php';
         <div class="form-section">
           <h3>Identitas Barang</h3>
           <div class="form-grid">
-            <label>No Barang <input name="idbarang" type="text" value="<?= h($item['idbarang'] ?? '') ?>" placeholder="BRG-004" <?= $editing ? 'readonly' : '' ?> required></label>
-            <label>Nama Barang <input name="nama" type="text" value="<?= h($item['nama'] ?? '') ?>" placeholder="Nama batu alam" required></label>
-            <label>Kelompok <input name="kelompok" type="text" value="<?= h($item['kelompok'] ?? '') ?>" placeholder="MRM" required></label>
-            <label>Satuan <input name="satuan" type="text" value="<?= h($item['satuan'] ?? '') ?>" placeholder="m2" required></label>
-            <label>Suplyer <input name="supplyer" type="text" value="<?= h($item['supplyer'] ?? '') ?>" placeholder="SUP01" required></label>
+            <?php 
+              if (!$editing) {
+                  $item['idbarang'] = generate_new_idbarang();
+                  $item['supplyer'] = generate_new_supplyer();
+              }
+            ?>
+            <label>No Barang <input name="idbarang" type="text" value="<?= h($item['idbarang'] ?? '') ?>" readonly class="readonly-input"></label>
+            <label>Suplyer <input name="supplyer" type="text" value="<?= h($item['supplyer'] ?? '') ?>" readonly class="readonly-input"></label>
+            <label style="grid-column: 1 / -1">Nama Barang <input name="nama" type="text" value="<?= h($item['nama'] ?? '') ?>" placeholder="Nama batu alam" required></label>
+          </div>
+          
+          <div style="margin-top: 16px;">
+            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--ink);">Kelompok</label>
+            <input type="hidden" name="kelompok" id="inputKelompok" value="<?= h($item['kelompok'] ?? '') ?>" required>
+            <div class="preset-buttons" id="kelompokButtons">
+              <?php
+                $kelompoks = ['Andesit Bakar RTM', 'Andesit Bakar RTA', 'Palimanan RTA', 'Palimanan RTM'];
+                foreach ($kelompoks as $k) {
+                  $active = ($item['kelompok'] ?? '') === $k ? 'active' : '';
+                  echo '<button type="button" class="preset-btn ' . $active . '" data-val="' . h($k) . '">' . h($k) . '</button>';
+                }
+              ?>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--ink);">Ukuran</label>
+            <input type="hidden" name="ukuran" id="inputUkuran" value="<?= h($item['ukuran'] ?? '') ?>" required>
+            <div class="preset-buttons" id="ukuranButtons">
+              <?php
+                $ukurans = ['10x10cm', '15x15cm', '20x20cm', '30x30cm', '40x40cm', '50x50cm'];
+                foreach ($ukurans as $u) {
+                  $active = ($item['ukuran'] ?? '') === $u ? 'active' : '';
+                  echo '<button type="button" class="preset-btn ' . $active . '" data-val="' . h($u) . '">' . h($u) . '</button>';
+                }
+              ?>
+            </div>
           </div>
         </div>
 
         <div class="form-section">
           <h3>Stok & Harga Pokok</h3>
           <div class="form-grid">
+            <label>Satuan <input name="satuan" type="text" value="<?= h($item['satuan'] ?? '') ?>" placeholder="m2" required></label>
             <label>Jumlah Stok <input name="stok" type="number" value="<?= h($item['stok'] ?? '0') ?>" required></label>
-            <label>Jumlah Perdus <input name="perdus" type="number" value="<?= h($item['perdus'] ?? '0') ?>" required></label>
+            <label>Beli Per Berapa Batu <input name="perdus" type="number" value="<?= h($item['perdus'] ?? '0') ?>" required></label>
             <label>Harga Pokok (Rp) <input name="harga" id="inputHarga" type="number" value="<?= h($item['harga'] ?? '0') ?>" required></label>
           </div>
         </div>
@@ -344,6 +377,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   calculate();
+
+  // Preset Buttons Logic (Kelompok & Ukuran)
+  const setupPresetButtons = (containerId, inputId) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const input = document.getElementById(inputId);
+    const buttons = container.querySelectorAll('.preset-btn');
+    
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        input.value = btn.dataset.val;
+      });
+    });
+  };
+
+  setupPresetButtons('kelompokButtons', 'inputKelompok');
+  setupPresetButtons('ukuranButtons', 'inputUkuran');
+
+  // Sidebar navigation smooth scroll fallback
+  document.querySelectorAll('.sidebar nav a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Update active class
+        document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+      }
+    });
+  });
 
   // Image upload preview
   const uploadArea = document.getElementById('imageUploadArea');

@@ -21,7 +21,8 @@ function normalize_barang(array $item): array
     return [
         'idbarang' => strtoupper(substr(trim((string) ($item['idbarang'] ?? '')), 0, 15)),
         'nama' => substr(trim((string) ($item['nama'] ?? '')), 0, 40),
-        'kelompok' => strtoupper(substr(trim((string) ($item['kelompok'] ?? '')), 0, 3)),
+        'kelompok' => strtoupper(substr(trim((string) ($item['kelompok'] ?? '')), 0, 10)),
+        'ukuran' => substr(trim((string) ($item['ukuran'] ?? '')), 0, 20),
         'stok' => number_value($item['stok'] ?? 0),
         'harga' => $harga,
         'satuan' => substr(trim((string) ($item['satuan'] ?? '')), 0, 5),
@@ -39,7 +40,7 @@ function normalize_barang(array $item): array
 function all_barang(): array
 {
     $statement = db()->query('
-        SELECT idbarang, nama, kelompok, stok, harga, satuan, perdus, margin1, harga1, jual,
+        SELECT idbarang, nama, kelompok, ukuran, stok, harga, satuan, perdus, margin1, harga1, jual,
                supplyer, batas_diskon, jumlah_diskon, gambar
         FROM barang
         ORDER BY nama ASC
@@ -90,10 +91,10 @@ function create_barang(array $item): void
 {
     $statement = db()->prepare('
         INSERT INTO barang (
-            idbarang, nama, kelompok, stok, harga, satuan, perdus, margin1,
+            idbarang, nama, kelompok, ukuran, stok, harga, satuan, perdus, margin1,
             supplyer, batas_diskon, jumlah_diskon, gambar
         ) VALUES (
-            :idbarang, :nama, :kelompok, :stok, :harga, :satuan, :perdus, :margin1,
+            :idbarang, :nama, :kelompok, :ukuran, :stok, :harga, :satuan, :perdus, :margin1,
             :supplyer, :batas_diskon, :jumlah_diskon, :gambar
         )
     ');
@@ -111,6 +112,7 @@ function update_barang(string $idbarang, array $item): bool
         UPDATE barang
         SET nama = :nama,
             kelompok = :kelompok,
+            ukuran = :ukuran,
             stok = :stok,
             harga = :harga,
             satuan = :satuan,
@@ -150,6 +152,7 @@ function bind_barang(array $item): array
         'idbarang' => $item['idbarang'],
         'nama' => $item['nama'],
         'kelompok' => $item['kelompok'],
+        'ukuran' => $item['ukuran'],
         'stok' => $item['stok'],
         'harga' => $item['harga'],
         'satuan' => $item['satuan'],
@@ -160,6 +163,36 @@ function bind_barang(array $item): array
         'jumlah_diskon' => $item['jumlah_diskon'],
         'gambar' => $item['gambar'],
     ];
+}
+
+function generate_new_idbarang(): string
+{
+    $statement = db()->query('SELECT idbarang FROM barang ORDER BY idbarang DESC LIMIT 1');
+    $lastId = $statement->fetchColumn();
+    if (!$lastId) {
+        return 'BRG-001';
+    }
+    // Asumsi format 'BRG-001'
+    if (preg_match('/^BRG-(\d+)$/i', $lastId, $matches)) {
+        $nextNumber = (int) $matches[1] + 1;
+        return 'BRG-' . str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
+    }
+    return 'BRG-' . strtoupper(substr(uniqid(), -4));
+}
+
+function generate_new_supplyer(): string
+{
+    $statement = db()->query('SELECT supplyer FROM barang ORDER BY supplyer DESC LIMIT 1');
+    $lastId = $statement->fetchColumn();
+    if (!$lastId) {
+        return 'SUP01';
+    }
+    // Asumsi format 'SUP01'
+    if (preg_match('/^SUP(\d+)$/i', $lastId, $matches)) {
+        $nextNumber = (int) $matches[1] + 1;
+        return 'SUP' . str_pad((string) $nextNumber, 2, '0', STR_PAD_LEFT);
+    }
+    return 'SUP' . strtoupper(substr(uniqid(), -2));
 }
 
 function filter_barang(array $rows, array $filters): array

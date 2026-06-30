@@ -1180,3 +1180,46 @@ td small {
   display: block;
   font-size: 16px;
 }
+
+/* Preset Buttons & Readonly */
+.preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-btn {
+  background: var(--white);
+  border: 1px solid var(--green-200);
+  color: var(--green-700);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.preset-btn:hover {
+  background: var(--green-50);
+  border-color: var(--green-300);
+}
+
+.preset-btn.active {
+  background: var(--green-600);
+  color: var(--white);
+  border-color: var(--green-600);
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2);
+}
+
+.readonly-input {
+  background: var(--gray-50) !important;
+  color: var(--gray-500) !important;
+  cursor: not-allowed;
+  border-style: dashed !important;
+}
+
+/* Scroll behavior for whole page smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
