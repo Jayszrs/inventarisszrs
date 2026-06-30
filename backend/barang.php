@@ -10,6 +10,13 @@ function normalize_barang(array $item): array
     $harga = number_value($item['harga'] ?? 0);
     $margin = number_value($item['margin1'] ?? 0);
     $hargaMargin = (int) round(($harga * $margin) / 100);
+    $jual = $harga + $hargaMargin;
+    
+    // Diskon dari 5% sampai 95%
+    $batas_diskon = number_value($item['batas_diskon'] ?? 0);
+    if ($batas_diskon > 95) $batas_diskon = 95;
+    
+    $jumlah_diskon = (int) round(($jual * $batas_diskon) / 100);
 
     return [
         'idbarang' => strtoupper(substr(trim((string) ($item['idbarang'] ?? '')), 0, 15)),
@@ -21,10 +28,11 @@ function normalize_barang(array $item): array
         'perdus' => number_value($item['perdus'] ?? 0),
         'margin1' => $margin,
         'harga1' => $hargaMargin,
-        'jual' => $harga + $hargaMargin,
+        'jual' => $jual,
         'supplyer' => strtoupper(substr(trim((string) ($item['supplyer'] ?? '')), 0, 5)),
-        'batas_diskon' => number_value($item['batas_diskon'] ?? 0),
-        'jumlah_diskon' => number_value($item['jumlah_diskon'] ?? 0),
+        'batas_diskon' => $batas_diskon,
+        'jumlah_diskon' => $jumlah_diskon,
+        'gambar' => trim((string) ($item['gambar'] ?? '')),
     ];
 }
 
@@ -32,7 +40,7 @@ function all_barang(): array
 {
     $statement = db()->query('
         SELECT idbarang, nama, kelompok, stok, harga, satuan, perdus, margin1, harga1, jual,
-               supplyer, batas_diskon, jumlah_diskon
+               supplyer, batas_diskon, jumlah_diskon, gambar
         FROM barang
         ORDER BY nama ASC
     ');
@@ -83,10 +91,10 @@ function create_barang(array $item): void
     $statement = db()->prepare('
         INSERT INTO barang (
             idbarang, nama, kelompok, stok, harga, satuan, perdus, margin1,
-            supplyer, batas_diskon, jumlah_diskon
+            supplyer, batas_diskon, jumlah_diskon, gambar
         ) VALUES (
             :idbarang, :nama, :kelompok, :stok, :harga, :satuan, :perdus, :margin1,
-            :supplyer, :batas_diskon, :jumlah_diskon
+            :supplyer, :batas_diskon, :jumlah_diskon, :gambar
         )
     ');
 
@@ -110,7 +118,8 @@ function update_barang(string $idbarang, array $item): bool
             margin1 = :margin1,
             supplyer = :supplyer,
             batas_diskon = :batas_diskon,
-            jumlah_diskon = :jumlah_diskon
+            jumlah_diskon = :jumlah_diskon,
+            gambar = :gambar
         WHERE idbarang = :idbarang
     ');
 
@@ -149,6 +158,7 @@ function bind_barang(array $item): array
         'supplyer' => $item['supplyer'],
         'batas_diskon' => $item['batas_diskon'],
         'jumlah_diskon' => $item['jumlah_diskon'],
+        'gambar' => $item['gambar'],
     ];
 }
 

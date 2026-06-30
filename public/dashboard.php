@@ -98,7 +98,7 @@ require __DIR__ . '/../frontend/layout/header.php';
     </section>
 
     <section class="workspace">
-      <form class="item-form" method="post" action="<?= h(url_path('/barang-save.php')) ?>">
+      <form class="item-form" method="post" action="<?= h(url_path('/barang-save.php')) ?>" enctype="multipart/form-data">
         <div class="form-heading">
           <div>
             <span class="eyebrow"><?= $editing ? 'Edit Data' : 'Input Barang' ?></span>
@@ -108,36 +108,75 @@ require __DIR__ . '/../frontend/layout/header.php';
         </div>
 
         <input type="hidden" name="mode" value="<?= $editing ? 'update' : 'create' ?>">
-        <div class="form-grid">
-          <?php
-            $item = $editing ?? [];
-            $fields = [
-                ['idbarang', 'No Barang', 'text', 'BRG-004', (bool) $editing],
-                ['nama', 'Nama Barang', 'text', 'Nama batu alam', false],
-                ['kelompok', 'Kelompok', 'text', 'MRM', false],
-                ['stok', 'Jumlah Stok', 'number', '0', false],
-                ['harga', 'Harga Pokok', 'number', '0', false],
-                ['satuan', 'Satuan', 'text', 'm2', false],
-                ['perdus', 'Jumlah Perdus', 'number', '0', false],
-                ['margin1', 'Margin %', 'number', '0', false],
-                ['supplyer', 'Suplyer', 'text', 'SUP01', false],
-                ['batas_diskon', 'Batas Diskon Barang', 'number', '0', false],
-                ['jumlah_diskon', 'Jumlah Diskon Rupiah', 'number', '0', false],
-            ];
-          ?>
-          <?php foreach ($fields as [$name, $label, $type, $placeholder, $readonly]): ?>
-            <label>
-              <?= h($label) ?>
-              <input
-                name="<?= h($name) ?>"
-                type="<?= h($type) ?>"
-                value="<?= h($item[$name] ?? '') ?>"
-                placeholder="<?= h($placeholder) ?>"
-                <?= $readonly ? 'readonly' : '' ?>
-                required
-              >
-            </label>
-          <?php endforeach; ?>
+        
+        <?php $item = $editing ?? []; ?>
+
+        <div class="form-section">
+          <h3>Gambar Produk</h3>
+          <div class="image-upload-area" id="imageUploadArea">
+            <?php if (!empty($item['gambar'])): ?>
+              <img src="<?= h(url_path('/' . $item['gambar'])) ?>" alt="Preview" class="image-preview active" id="imagePreview">
+            <?php else: ?>
+              <img src="" alt="Preview" class="image-preview" id="imagePreview">
+            <?php endif; ?>
+            <div class="upload-placeholder" <?= !empty($item['gambar']) ? 'style="display:none;"' : '' ?>>
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2Zm0 16H5V5h14v14Zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71Z"/></svg>
+              <span>Klik atau Drag & Drop Gambar<br><small>Maksimal 2MB (JPG, PNG, WEBP)</small></span>
+            </div>
+            <input type="file" name="gambar" id="gambarInput" accept="image/jpeg, image/png, image/webp, image/gif" class="hidden-input">
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Identitas Barang</h3>
+          <div class="form-grid">
+            <label>No Barang <input name="idbarang" type="text" value="<?= h($item['idbarang'] ?? '') ?>" placeholder="BRG-004" <?= $editing ? 'readonly' : '' ?> required></label>
+            <label>Nama Barang <input name="nama" type="text" value="<?= h($item['nama'] ?? '') ?>" placeholder="Nama batu alam" required></label>
+            <label>Kelompok <input name="kelompok" type="text" value="<?= h($item['kelompok'] ?? '') ?>" placeholder="MRM" required></label>
+            <label>Satuan <input name="satuan" type="text" value="<?= h($item['satuan'] ?? '') ?>" placeholder="m2" required></label>
+            <label>Suplyer <input name="supplyer" type="text" value="<?= h($item['supplyer'] ?? '') ?>" placeholder="SUP01" required></label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Stok & Harga Pokok</h3>
+          <div class="form-grid">
+            <label>Jumlah Stok <input name="stok" type="number" value="<?= h($item['stok'] ?? '0') ?>" required></label>
+            <label>Jumlah Perdus <input name="perdus" type="number" value="<?= h($item['perdus'] ?? '0') ?>" required></label>
+            <label>Harga Pokok (Rp) <input name="harga" id="inputHarga" type="number" value="<?= h($item['harga'] ?? '0') ?>" required></label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Margin & Jual Reguler</h3>
+          <div class="form-grid align-center">
+            <label>Margin % <input name="margin1" id="inputMargin" type="number" value="<?= h($item['margin1'] ?? '0') ?>" required></label>
+            <div class="live-preview-box">
+              <span>Harga Jual Reguler</span>
+              <strong id="previewJual">Rp 0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Diskon Penjualan</h3>
+          <input type="hidden" name="batas_diskon" id="inputDiskon" value="<?= h($item['batas_diskon'] ?? '0') ?>">
+          <div class="discount-buttons" id="discountButtons">
+            <button type="button" class="discount-btn" data-val="0">0%</button>
+            <?php for ($d = 5; $d <= 95; $d += 5): ?>
+              <button type="button" class="discount-btn" data-val="<?= $d ?>"><?= $d ?>%</button>
+            <?php endfor; ?>
+          </div>
+          <div class="discount-preview-row">
+            <div class="live-preview-box danger">
+              <span>Potongan Diskon</span>
+              <strong id="previewPotongan">Rp 0</strong>
+            </div>
+            <div class="live-preview-box success">
+              <span>Harga Setelah Diskon</span>
+              <strong id="previewHargaDiskon">Rp 0</strong>
+            </div>
+          </div>
         </div>
 
         <button class="primary-button" type="submit"><?= $editing ? 'Simpan Perubahan' : 'Tambah Barang' ?></button>
@@ -207,14 +246,29 @@ require __DIR__ . '/../frontend/layout/header.php';
                 <tr>
                   <td><strong><?= h($item['idbarang']) ?></strong></td>
                   <td>
-                    <div class="item-name"><?= h($item['nama']) ?></div>
-                    <small><?= h($item['satuan']) ?> · <?= h($item['perdus']) ?> perdus · diskon <?= rupiah($item['jumlah_diskon']) ?></small>
+                    <div class="item-name-col">
+                      <?php if (!empty($item['gambar'])): ?>
+                        <img src="<?= h(url_path('/' . $item['gambar'])) ?>" alt="Gambar" class="table-thumb">
+                      <?php else: ?>
+                        <div class="table-thumb placeholder"></div>
+                      <?php endif; ?>
+                      <div>
+                        <div class="item-name"><?= h($item['nama']) ?></div>
+                        <small><?= h($item['satuan']) ?> · <?= h($item['perdus']) ?> perdus</small>
+                      </div>
+                    </div>
                   </td>
                   <td><span class="tag"><?= h($item['kelompok']) ?></span></td>
                   <td><span class="stock <?= h($statusClass) ?>"><?= number_format($item['stok'], 0, ',', '.') ?> <?= h($status) ?></span></td>
                   <td><?= rupiah($item['harga']) ?></td>
                   <td><?= h($item['margin1']) ?>%<small><?= rupiah($item['harga1']) ?></small></td>
-                  <td><strong><?= rupiah($item['jual']) ?></strong></td>
+                  <td>
+                    <strong><?= rupiah($item['jual']) ?></strong>
+                    <?php if ($item['batas_diskon'] > 0): ?>
+                      <small class="discount-label">Diskon <?= h($item['batas_diskon']) ?>% (-<?= rupiah($item['jumlah_diskon']) ?>)</small>
+                      <strong class="text-success"><?= rupiah($item['jual'] - $item['jumlah_diskon']) ?></strong>
+                    <?php endif; ?>
+                  </td>
                   <td><?= h($item['supplyer']) ?></td>
                   <td>
                     <div class="row-actions">
@@ -239,4 +293,101 @@ require __DIR__ . '/../frontend/layout/header.php';
   </section>
 </main>
 <?php require __DIR__ . '/../frontend/components/flash.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const inputHarga = document.getElementById('inputHarga');
+  const inputMargin = document.getElementById('inputMargin');
+  const previewJual = document.getElementById('previewJual');
+  const inputDiskon = document.getElementById('inputDiskon');
+  const discountButtons = document.querySelectorAll('.discount-btn');
+  const previewPotongan = document.getElementById('previewPotongan');
+  const previewHargaDiskon = document.getElementById('previewHargaDiskon');
+  
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+  };
+
+  const calculate = () => {
+    const harga = parseInt(inputHarga.value) || 0;
+    const margin = parseInt(inputMargin.value) || 0;
+    const diskonPersen = parseInt(inputDiskon.value) || 0;
+    
+    const hargaMargin = Math.round(harga * margin / 100);
+    const hargaJual = harga + hargaMargin;
+    
+    const potonganDiskon = Math.round(hargaJual * diskonPersen / 100);
+    const hargaSetelahDiskon = hargaJual - potonganDiskon;
+    
+    previewJual.textContent = formatRupiah(hargaJual);
+    previewPotongan.textContent = formatRupiah(potonganDiskon);
+    previewHargaDiskon.textContent = formatRupiah(hargaSetelahDiskon);
+    
+    // Update active button
+    discountButtons.forEach(btn => {
+      if(parseInt(btn.dataset.val) === diskonPersen) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  };
+
+  inputHarga.addEventListener('input', calculate);
+  inputMargin.addEventListener('input', calculate);
+  
+  discountButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      inputDiskon.value = btn.dataset.val;
+      calculate();
+    });
+  });
+  
+  calculate();
+
+  // Image upload preview
+  const uploadArea = document.getElementById('imageUploadArea');
+  const fileInput = document.getElementById('gambarInput');
+  const imagePreview = document.getElementById('imagePreview');
+  const placeholder = uploadArea.querySelector('.upload-placeholder');
+
+  uploadArea.addEventListener('click', () => fileInput.click());
+  
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+  
+  uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+  });
+  
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+      fileInput.files = e.dataTransfer.files;
+      handleFile(fileInput.files[0]);
+    }
+  });
+
+  fileInput.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+      handleFile(this.files[0]);
+    }
+  });
+
+  function handleFile(file) {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagePreview.src = e.target.result;
+      imagePreview.classList.add('active');
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+
 <?php require __DIR__ . '/../frontend/layout/footer.php'; ?>
