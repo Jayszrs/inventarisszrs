@@ -3,7 +3,7 @@ $currentPage = $currentPage ?? 'dashboard';
 ?>
 <aside class="sidebar">
   <div class="brand-mark compact">
-    <img src="<?= h(url_path('/assets/img/logo-fazmastone-sidebar-white.png')) ?>" alt="FAZMAstone" class="brand-logo-img">
+    <img src="<?= h(url_path('/assets/img/logo-fazmastone.png')) ?>" alt="FAZMAstone" class="brand-logo-img">
   </div>
 
   <nav>
