@@ -234,9 +234,11 @@ svg {
 
 /* Brand Logo Image */
 .brand-logo-img {
-  height: 44px;
-  width: auto;
-  filter: brightness(0) invert(1);
+  display: block;
+  width: 172px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -676,6 +678,10 @@ input::placeholder {
   gap: 38px;
   border-right: 1px solid var(--green-200);
   background: linear-gradient(180deg, var(--green-700), var(--green-800));
+}
+
+.sidebar .brand-mark {
+  animation: none;
 }
 
 .sidebar nav {
@@ -1164,6 +1170,7 @@ input::placeholder {
 
 .item-form,
 .table-panel {
+  min-width: 0;
   border: 1px solid var(--green-200);
   border-radius: 16px;
   background: var(--white);
@@ -1723,14 +1730,20 @@ html {
 }
 
 /* Sales */
-.sales-workspace,
+.sales-workspace {
+  grid-template-columns: minmax(360px, 460px) minmax(0, 1fr);
+  gap: 18px;
+}
+
 .role-workspace {
   grid-template-columns: minmax(360px, 500px) minmax(0, 1fr);
 }
 
 .sales-form {
   display: grid;
-  gap: 18px;
+  gap: 16px;
+  position: sticky;
+  top: 24px;
 }
 
 .category-toolbar {
@@ -1753,6 +1766,7 @@ html {
 
 .category-btn {
   padding: 0 13px;
+  min-width: 46px;
 }
 
 .category-btn:hover,
@@ -1766,15 +1780,15 @@ html {
 
 .sale-lines {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .sale-line {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) 96px minmax(112px, 0.75fr) minmax(112px, 0.75fr) 42px;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1.6fr) minmax(76px, 0.55fr) minmax(88px, 0.75fr) minmax(88px, 0.75fr) 40px;
+  gap: 8px;
   align-items: end;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid var(--green-200);
   border-radius: 14px;
   background: var(--green-50);
@@ -1782,6 +1796,14 @@ html {
 
 .sale-line label {
   min-width: 0;
+}
+
+.sale-line input,
+.sale-line select {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 10px;
 }
 
 .mini-total,
@@ -1794,6 +1816,17 @@ html {
   border: 1px solid var(--green-200);
   border-radius: 10px;
   background: var(--white);
+}
+
+.mini-total {
+  min-width: 0;
+  padding: 8px 10px;
+}
+
+.mini-total strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mini-total span,
@@ -1811,7 +1844,7 @@ html {
 }
 
 .icon-button {
-  width: 42px;
+  width: 40px;
   padding: 0;
   display: grid;
   place-items: center;
@@ -1836,7 +1869,21 @@ html {
 }
 
 .sales-filter {
+  display: grid;
   grid-template-columns: minmax(220px, 1.4fr) minmax(150px, 0.7fr) minmax(150px, 0.8fr) 96px;
+}
+
+.sales-filter input,
+.sales-filter select {
+  min-width: 0;
+}
+
+.sales-workspace .table-panel {
+  box-shadow: 0 10px 34px rgba(22, 163, 74, 0.08);
+}
+
+.sales-workspace table {
+  min-width: 920px;
 }
 
 tfoot th {
@@ -1961,6 +2008,10 @@ tfoot th {
   .sales-workspace,
   .role-workspace {
     grid-template-columns: 1fr;
+  }
+
+  .sales-form {
+    position: static;
   }
 
   .sale-line {
