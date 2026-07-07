@@ -229,3 +229,172 @@ function category_options_for_sales(array $barang): array
 
     return array_values(array_unique(array_merge($presets, $actual)));
 }
+
+// ── Revenue & Profit Dashboard Functions ─────────────────
+
+function revenue_today(): array
+{
+    $stmt = db()->prepare('
+        SELECT COALESCE(SUM(total), 0) AS revenue,
+               COALESCE(SUM(total) - SUM(harga_beli * jumlah), 0) AS profit,
+               COALESCE(SUM(jumlah), 0) AS items,
+               COUNT(DISTINCT no_faktur) AS faktur
+        FROM b_keluar
+        WHERE tgl_faktur = CURDATE()
+    ');
+    $stmt->execute();
+    return $stmt->fetch() ?: ['revenue' => 0, 'profit' => 0, 'items' => 0, 'faktur' => 0];
+}
+
+function revenue_this_month(): array
+{
+    $stmt = db()->prepare('
+        SELECT COALESCE(SUM(total), 0) AS revenue,
+               COALESCE(SUM(total) - SUM(harga_beli * jumlah), 0) AS profit,
+               COALESCE(SUM(jumlah), 0) AS items,
+               COUNT(DISTINCT no_faktur) AS faktur
+        FROM b_keluar
+        WHERE YEAR(tgl_faktur) = YEAR(CURDATE()) AND MONTH(tgl_faktur) = MONTH(CURDATE())
+    ');
+    $stmt->execute();
+    return $stmt->fetch() ?: ['revenue' => 0, 'profit' => 0, 'items' => 0, 'faktur' => 0];
+}
+
+function revenue_this_year(): array
+{
+    $stmt = db()->prepare('
+        SELECT COALESCE(SUM(total), 0) AS revenue,
+               COALESCE(SUM(total) - SUM(harga_beli * jumlah), 0) AS profit,
+               COALESCE(SUM(jumlah), 0) AS items,
+               COUNT(DISTINCT no_faktur) AS faktur
+        FROM b_keluar
+        WHERE YEAR(tgl_faktur) = YEAR(CURDATE())
+    ');
+    $stmt->execute();
+    return $stmt->fetch() ?: ['revenue' => 0, 'profit' => 0, 'items' => 0, 'faktur' => 0];
+}
+
+function daily_revenue_chart(int $days = 7): array
+{
+    $stmt = db()->prepare("
+        SELECT DATE_FORMAT(tgl_faktur, '%Y-%m-%d') AS label,
+               COALESCE(SUM(total), 0) AS revenue,
+               COALESCE(SUM(total) - SUM(harga_beli * jumlah), 0) AS profit
+        FROM b_keluar
+        WHERE tgl_faktur >= DATE_SUB(CURDATE(), INTERVAL :days DAY)
+        GROUP BY tgl_faktur
+        ORDER BY tgl_faktur ASC
+    ");
+    $stmt->execute(['days' => $days]);
+    $rows = $stmt->fetchAll();
+
+    // Fill missing days
+    $result = [];
+    for ($i = $days - 1; $i >= 0; $i--) {
+        $date = date('Y-m-d', strtotime("-{$i} days"));
+        $found = false;
+        foreach ($rows as $row) {
+            if ($row['label'] === $date) {
+                $result[] = [
+                    'label' => date('d M', strtotime($date)),
+                    'revenue' => (int) $row['revenue'],
+                    'profit' => (int) $row['profit'],
+                ];
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            $result[] = [
+                'label' => date('d M', strtotime($date)),
+                'revenue' => 0,
+                'profit' => 0,
+            ];
+        }
+    }
+
+    return $result;
+}
+
+function monthly_revenue_chart(int $months = 12): array
+{
+    $stmt = db()->prepare("
+        SELECT DATE_FORMAT(tgl_faktur, '%Y-%m') AS label,
+               COALESCE(SUM(total), 0) AS revenue,
+               COALESCE(SUM(total) - SUM(harga_beli * jumlah), 0) AS profit
+        FROM b_keluar
+        WHERE tgl_faktur >= DATE_SUB(CURDATE(), INTERVAL :months MONTH)
+        GROUP BY DATE_FORMAT(tgl_faktur, '%Y-%m')
+        ORDER BY label ASC
+    ");
+    $stmt->execute(['months' => $months]);
+    $rows = $stmt->fetchAll();
+
+    $result = [];
+    $monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    for ($i = $months - 1; $i >= 0; $i--) {
+        $ym = date('Y-m', strtotime("-{$i} months"));
+        $month = (int) date('n', strtotime("-{$i} months"));
+        $found = false;
+        foreach ($rows as $row) {
+            if ($row['label'] === $ym) {
+                $result[] = [
+                    'label' => $monthNames[$month - 1] . ' ' . date('y', strtotime("-{$i} months")),
+                    'revenue' => (int) $row['revenue'],
+                    'profit' => (int) $row['profit'],
+                ];
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            $result[] = [
+                'label' => $monthNames[$month - 1] . ' ' . date('y', strtotime("-{$i} months")),
+                'revenue' => 0,
+                'profit' => 0,
+            ];
+        }
+    }
+
+    return $result;
+}
+
+function yearly_revenue_chart(): array
+{
+    $stmt = db()->prepare("
+        SELECT YEAR(tgl_faktur) AS label,
+               COALESCE(SUM(total), 0) AS revenue,
+               COALESCE(SUM(total) - SUM(harga_beli * jumlah), 0) AS profit
+        FROM b_keluar
+        GROUP BY YEAR(tgl_faktur)
+        ORDER BY label ASC
+    ");
+    $stmt->execute();
+    $rows = $stmt->fetchAll();
+
+    if (empty($rows)) {
+        $currentYear = (int) date('Y');
+        return [['label' => (string) $currentYear, 'revenue' => 0, 'profit' => 0]];
+    }
+
+    return array_map(fn($r) => [
+        'label' => (string) $r['label'],
+        'revenue' => (int) $r['revenue'],
+        'profit' => (int) $r['profit'],
+    ], $rows);
+}
+
+function recent_sales(int $limit = 10): array
+{
+    $stmt = db()->prepare("
+        SELECT k.no_faktur, k.tgl_faktur, k.kode_brg, k.jumlah, k.harga_beli,
+               k.harga_jual, k.total, b.nama, b.satuan, b.kelompok
+        FROM b_keluar k
+        INNER JOIN barang b ON b.idbarang = k.kode_brg
+        ORDER BY k.tgl_faktur DESC, k.id DESC
+        LIMIT :lmt
+    ");
+    $stmt->bindValue('lmt', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
