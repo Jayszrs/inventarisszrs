@@ -89,6 +89,23 @@ function penjualan_summary(array $rows): array
     ];
 }
 
+function penjualan_by_faktur(string $noFaktur): array
+{
+    $statement = db()->prepare('
+        SELECT k.id, k.no_faktur, k.tgl_faktur, k.kode_brg, k.jumlah, k.harga_beli,
+               k.harga_jual, k.total, k.created_at, b.nama, b.satuan, b.kelompok,
+               a.name AS admin_name
+        FROM b_keluar k
+        INNER JOIN barang b ON b.idbarang = k.kode_brg
+        LEFT JOIN admins a ON a.id = k.created_by
+        WHERE k.no_faktur = :no_faktur
+        ORDER BY k.id ASC
+    ');
+    $statement->execute(['no_faktur' => normalize_faktur($noFaktur)]);
+
+    return $statement->fetchAll();
+}
+
 function validate_penjualan(array $payload): array
 {
     $tglFaktur = trim((string) ($payload['tgl_faktur'] ?? date('Y-m-d')));

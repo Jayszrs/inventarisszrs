@@ -11,6 +11,7 @@ Aplikasi inventaris Fazma Stone berbasis PHP, HTML, CSS, dan MySQL/XAMPP. Sistem
 - Penjualan multi kategori untuk mencatat barang keluar.
 - Nomor faktur dibuat otomatis dengan format `FKyymmddNN`, ditampilkan `readonly`, dan tetap di-generate dari backend agar tidak bisa diubah manual.
 - Validasi stok saat penjualan, pengurangan stok otomatis, serta penyimpanan harga beli, harga jual, dan total per item.
+- Tombol download struk PDF muncul setelah penjualan berhasil disimpan, lengkap dengan logo Fazma Stone, kop surat, detail faktur, item, total modal, dan keuntungan.
 - Ringkasan inventaris dan laporan penjualan: total barang, jumlah stok, nilai modal, stok tipis, pendapatan, profit, faktur, grafik harian/bulanan/tahunan, dan penjualan terbaru.
 - Export laporan penjualan ke CSV dengan filter yang sama seperti halaman penjualan.
 - Role management untuk tambah, edit, dan hapus akun admin.
@@ -98,6 +99,7 @@ backend/
   database.php     Koneksi PDO MySQL dan bootstrap tabel
   helpers.php      Helper umum
   penjualan.php    Generate faktur, validasi, simpan penjualan, laporan revenue
+  receipt_pdf.php  Template dan generator struk penjualan PDF
   data/            Backup data JSON lama
 
 database/
@@ -112,8 +114,9 @@ public/
   login.php        Halaman login admin
   dashboard.php    Dashboard CRUD barang
   filter-stok.php  Filter dan daftar stok
-  penjualan.php    Input penjualan multi kategori
+  penjualan.php    Input penjualan multi kategori dan tombol struk PDF
   penjualan-save.php
+  struk-pdf.php    Download struk penjualan PDF
   ringkasan.php    Dashboard laporan inventaris dan penjualan
   export-csv.php   Export laporan penjualan CSV
   role-management.php

@@ -21,6 +21,7 @@ if ($errors) {
 try {
     create_penjualan($sale, (int) (current_user()['id'] ?? 0));
     flash('Faktur penjualan ' . $sale['no_faktur'] . ' berhasil disimpan.');
+    redirect_to('/penjualan.php?struk=' . urlencode((string) $sale['no_faktur']));
 } catch (Throwable $exception) {
     flash($exception->getMessage(), 'error');
 }

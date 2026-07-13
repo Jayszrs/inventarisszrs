@@ -20,6 +20,8 @@ $sales = all_penjualan($filters);
 $summary = penjualan_summary($sales);
 $kelompokOptions = unique_options($barangRows, 'kelompok');
 $nextFaktur = generate_no_faktur(date('Y-m-d'));
+$latestFaktur = normalize_faktur((string) ($_GET['struk'] ?? ''));
+$latestReceipt = $latestFaktur !== '' ? penjualan_by_faktur($latestFaktur) : [];
 $productPayload = array_map(static fn (array $item): array => [
     'kode' => $item['idbarang'],
     'nama' => $item['nama'],
@@ -82,6 +84,19 @@ require __DIR__ . '/../frontend/layout/header.php';
           <label>No Faktur <input name="no_faktur" id="noFaktur" type="text" maxlength="10" value="<?= h($nextFaktur) ?>" readonly class="readonly-input" required></label>
           <label>Tanggal Faktur <input name="tgl_faktur" id="tglFaktur" type="date" value="<?= h(date('Y-m-d')) ?>" required></label>
         </div>
+
+        <?php if ($latestReceipt): ?>
+          <div class="receipt-ready">
+            <div>
+              <span>Struk siap diunduh</span>
+              <strong><?= h($latestFaktur) ?></strong>
+            </div>
+            <a class="receipt-download" href="<?= h(url_path('/struk-pdf.php?no_faktur=' . urlencode($latestFaktur))) ?>" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2ZM19 9h-4V3H9v6H5l7 7 7-7Z"/></svg>
+              Download Struk PDF
+            </a>
+          </div>
+        <?php endif; ?>
 
         <div class="category-toolbar" id="categoryToolbar">
           <button type="button" class="category-btn active" data-category="">Semua</button>

@@ -1778,6 +1778,65 @@ html {
   background: var(--green-500);
 }
 
+.receipt-ready {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--green-300);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--green-100), var(--white));
+}
+
+.receipt-ready span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gray-500);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.receipt-ready strong {
+  color: var(--green-800);
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+}
+
+.receipt-download {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--white);
+  background: var(--green-600);
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.24);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.receipt-download:hover {
+  background: var(--green-700);
+  box-shadow: 0 10px 26px rgba(22, 163, 74, 0.32);
+  transform: translateY(-1px);
+}
+
+.receipt-download svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 .sale-lines {
   display: grid;
   gap: 10px;
@@ -2096,6 +2155,14 @@ tfoot th {
 
   .sales-filter {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .receipt-ready {
+    grid-template-columns: 1fr;
+  }
+
+  .receipt-download {
+    width: 100%;
   }
 }
 
