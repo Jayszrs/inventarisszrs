@@ -92,19 +92,17 @@ function penjualan_summary(array $rows): array
 function validate_penjualan(array $payload): array
 {
     $tglFaktur = trim((string) ($payload['tgl_faktur'] ?? date('Y-m-d')));
-    $noFaktur = normalize_faktur((string) ($payload['no_faktur'] ?? ''));
+    $noFaktur = '';
     $kodeBarang = $payload['kode_brg'] ?? [];
     $jumlah = $payload['jumlah'] ?? [];
     $items = [];
     $errors = [];
 
-    if ($noFaktur === '') {
-        $noFaktur = generate_no_faktur($tglFaktur);
-    }
-
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $tglFaktur)) {
         $errors[] = 'Tanggal faktur tidak valid.';
     }
+
+    $noFaktur = generate_no_faktur($errors ? date('Y-m-d') : $tglFaktur);
 
     if (strlen($noFaktur) !== 10) {
         $errors[] = 'No faktur harus 10 karakter.';

@@ -79,7 +79,7 @@ require __DIR__ . '/../frontend/layout/header.php';
         </div>
 
         <div class="form-grid">
-          <label>No Faktur <input name="no_faktur" id="noFaktur" type="text" maxlength="10" value="<?= h($nextFaktur) ?>" required></label>
+          <label>No Faktur <input name="no_faktur" id="noFaktur" type="text" maxlength="10" value="<?= h($nextFaktur) ?>" readonly class="readonly-input" required></label>
           <label>Tanggal Faktur <input name="tgl_faktur" id="tglFaktur" type="date" value="<?= h(date('Y-m-d')) ?>" required></label>
         </div>
 
